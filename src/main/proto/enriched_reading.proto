@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package envsensor.vernemq;
+
+option java_package = "envsensor.vernemq";
+option java_multiple_files = true;
+
+message EnrichedReading {
+  uint64 time = 1;
+  string topic = 2;
+  bytes ipv4 = 3;
+  bytes ipv6 = 4;
+  string user = 5;
+  string clientid = 6;
+  string broker = 7;
+
+  fixed64 mac = 8;
+
+  sint32 rssi    = 9;
+  uint32 batt    = 10;
+  float  esp32_t = 11;
+
+  optional float bme280_t = 12;
+  optional float bme280_p = 13;
+  optional float bme280_h = 14;
+
+  optional float sht4x_t  = 15;
+  optional float sht4x_h  = 16;
+}

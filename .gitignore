@@ -1,0 +1,39 @@
+# Maven
+/target/
+dependency-reduced-pom.xml
+*.log
+
+# Private deployment files
+private/
+secrets/
+*.private.yaml
+*.private.yml
+*.local.yaml
+*.local.yml
+.env
+.env.*
+*_token
+*token*
+*.kubeconfig
+
+# Sample/captured data
+*.bin
+*.csv
+*.csv.zst
+*.parquet
+*.pcap
+*.pcapng
+!*.example.bin
+!*.example.csv
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
