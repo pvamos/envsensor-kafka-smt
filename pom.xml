@@ -6,9 +6,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.envsensor</groupId>
-  <artifactId>envsensor-smt</artifactId>
-  <version>0.1.0</version>
-  <name>envsensor-smt</name>
+  <artifactId>envsensor-kafka-smt</artifactId>
+  <version>1.0.0</version>
+  <name>envsensor-kafka-smt</name>
   <description>Kafka Connect SMT for envsensor EnrichedReading protobuf</description>
 
   <properties>

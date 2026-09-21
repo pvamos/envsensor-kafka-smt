@@ -22,6 +22,7 @@ This SMT is used in a custom Kafka Connect image: [https://github.com/pvamos/kaf
 **Péter Vámos**
 
 * [https://github.com/pvamos](https://github.com/pvamos)
+* [ORCID: 0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
 * [https://linkedin.com/in/pvamos](https://linkedin.com/in/pvamos)
 * [pvamos@gmail.com](mailto:pvamos@gmail.com)
 
@@ -33,6 +34,14 @@ This project is part of the software stack supporting the author's **2026 thesis
 for the **Expert in Applied Environmental Studies BSc** program at **John Wesley Theological College, Budapest**.
 
 The SMT is used in an environmental monitoring pipeline built around ESP32 sensor nodes, VerneMQ MQTT, Kafka, Kafka Connect, S3-compatible object storage, ClickHouse and Grafana.
+
+
+**Thesis:** *Környezeti paraméterek mérése a tudomány és technológia fejlődésének tükrében – Egy skálázható szenzorhálózat megvalósításának tanulságai*<br>
+**Thesis DOI:** [10.5281/zenodo.22843091](https://doi.org/10.5281/zenodo.22843091)<br>
+**Research project overview:** [environmental-sensor-network](https://github.com/pvamos/environmental-sensor-network)<br>
+**Author ORCID:** [0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
+
+This repository is one implementation component of the broader environmental sensor network. The project overview repository documents the end-to-end architecture, the role of each software component, research outputs, archival releases and reproducibility information.
 
 ---
 
@@ -62,30 +71,18 @@ Output:
 * the SMT itself emits no CSV header
 * the SMT itself emits no trailing newline
 
-The current Maven project is still named:
+The Maven artifact, repository and plugin naming are aligned for the archival release:
 
 ```text
-artifactId: envsensor-smt
-name: envsensor-smt
+artifactId: envsensor-kafka-smt
+name: envsensor-kafka-smt
+version: 1.0.0
 ```
 
-That means the current shaded JAR name is:
+The shaded JAR is therefore:
 
 ```text
-target/envsensor-smt-0.1.0-all.jar
-```
-
-If you want the Maven artifact name to match the public repository name, update `pom.xml`:
-
-```xml
-<artifactId>envsensor-kafka-smt</artifactId>
-<name>envsensor-kafka-smt</name>
-```
-
-After that change, the shaded JAR becomes:
-
-```text
-target/envsensor-kafka-smt-0.1.0-all.jar
+target/envsensor-kafka-smt-1.0.0-all.jar
 ```
 
 ---
@@ -187,7 +184,7 @@ The example multi-stage Kafka Connect image build downloads or builds these part
 | Image layer/component | Source | Installed into image |
 |---|---|---|
 | Strimzi Kafka Connect base image | `quay.io/strimzi/kafka:0.49.1-kafka-4.1.1` | base image; includes Kafka and Kafka Connect runtime |
-| This SMT project | `https://github.com/pvamos/envsensor-kafka-smt.git` | built with Maven, copied to `/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar` in the current Dockerfile |
+| This SMT project | `https://github.com/pvamos/envsensor-kafka-smt.git` | built with Maven, copied to `/opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar` in the archival Dockerfile |
 | Stream Reactor MQTT connector | Lenses.io Stream Reactor release archive | `/opt/kafka/plugins/mqtt` |
 | Confluent Amazon S3 Sink Connector | Confluent Hub download archive `confluentinc-kafka-connect-s3` | `/opt/kafka/plugins/confluentinc-kafka-connect-s3-<version>` |
 
@@ -378,16 +375,10 @@ From the repository root:
 mvn -U -DskipTests package
 ```
 
-Current output artifact:
+Output artifact for the archival release:
 
 ```text
-target/envsensor-smt-0.1.0-all.jar
-```
-
-If you rename the Maven artifact to `envsensor-kafka-smt`, the output artifact becomes:
-
-```text
-target/envsensor-kafka-smt-0.1.0-all.jar
+target/envsensor-kafka-smt-1.0.0-all.jar
 ```
 
 ### Run tests
@@ -420,7 +411,7 @@ A common deployment pattern is a custom Kafka Connect image based on a Strimzi i
 FROM docker.io/library/maven:3.9.12-eclipse-temurin-17 AS smt-build
 
 ARG SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"
-ARG SMT_REF="main"
+ARG SMT_REF="v1.0.0"
 ARG SMT_SUBDIR="."
 ARG SMT_MVN_ARGS="-DskipTests package"
 ARG SMT_JAR_GLOB="target/*-all.jar"
@@ -436,7 +427,7 @@ WORKDIR /work/repo/${SMT_SUBDIR}
 
 RUN set -eux;     mvn -U ${SMT_MVN_ARGS};     test -n "$(ls -1 ${SMT_JAR_GLOB} 2>/dev/null | head -n1)"
 
-RUN set -eux;     JAR="$(ls -1 ${SMT_JAR_GLOB} | head -n1)";     cp -v "${JAR}" /work/envsensor-smt.jar
+RUN set -eux;     JAR="$(ls -1 ${SMT_JAR_GLOB} | head -n1)";     cp -v "${JAR}" /work/envsensor-kafka-smt.jar
 
 FROM quay.io/strimzi/kafka:0.49.1-kafka-4.1.1
 
@@ -462,9 +453,9 @@ ARG CONFLUENT_S3_URL="https://hub-downloads.confluent.io/api/plugins/confluentin
 RUN set -eux;     curl -fsSL -o "/tmp/${CONFLUENT_S3_ZIP}" "${CONFLUENT_S3_URL}";     unzip -q "/tmp/${CONFLUENT_S3_ZIP}" -d /opt/kafka/plugins;     rm -f "/tmp/${CONFLUENT_S3_ZIP}";     test -d "/opt/kafka/plugins/confluentinc-kafka-connect-s3-${CONFLUENT_S3_VERSION}/lib"
 
 # envsensor SMT plugin
-RUN mkdir -p /opt/kafka/plugins/envsensor-smt
+RUN mkdir -p /opt/kafka/plugins/envsensor-kafka-smt
 
-COPY --from=smt-build /work/envsensor-smt.jar /opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
+COPY --from=smt-build /work/envsensor-kafka-smt.jar /opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 
 RUN set -eux;     chown -R 1001:0 /opt/kafka/plugins;     chmod -R g+rx /opt/kafka/plugins
 
@@ -474,7 +465,7 @@ USER 1001
 ### Podman build example
 
 ```bash
-podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --secret id=github_token,src=~/.github_token   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="main"   -t registry.example.com/example/kafka-connect:0.0.0   .
+podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --secret id=github_token,src=~/.github_token   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="v1.0.0"   -t registry.example.com/example/kafka-connect:0.0.0   .
 ```
 
 Push:
@@ -516,13 +507,13 @@ Expected plugin directories in the current Dockerfile:
 ```text
 /opt/kafka/plugins/mqtt
 /opt/kafka/plugins/confluentinc-kafka-connect-s3-12.0.0
-/opt/kafka/plugins/envsensor-smt
+/opt/kafka/plugins/envsensor-kafka-smt
 ```
 
 Expected current SMT JAR path:
 
 ```text
-/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
+/opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 ```
 
 The SMT plugin is discovered through the Java ServiceLoader file inside the JAR:
@@ -1121,7 +1112,7 @@ kubectl -n kafka exec -it <connect-pod> --   find /opt/kafka/plugins -maxdepth 3
 Verify the service registration file exists inside the JAR:
 
 ```bash
-jar tf target/envsensor-smt-0.1.0-all.jar | grep 'META-INF/services/org.apache.kafka.connect.transforms.Transformation'
+jar tf target/envsensor-kafka-smt-1.0.0-all.jar | grep 'META-INF/services/org.apache.kafka.connect.transforms.Transformation'
 ```
 
 Expected class name:
@@ -1182,16 +1173,27 @@ Check:
 
 ---
 
+## 📚 Citation and archival release
+
+This repository is being prepared as a versioned research-software artifact associated with the BSc thesis above.
+
+* `CITATION.cff` provides GitHub-compatible citation metadata.
+* `.zenodo.json` provides Zenodo-specific metadata and links this software to the thesis with `isSupplementTo`.
+* The planned first archival software release is **v1.0.0**.
+* After Zenodo mints the software DOI, add the DOI badge and DOI to this README and to `CITATION.cff` without creating a new software version solely for that metadata backlink.
+
+Until the software DOI exists, cite the thesis DOI and the repository URL.
+
+---
+
 ## 🧭 Roadmap / recommended improvements
 
-* Rename Maven `artifactId` and `name` from `envsensor-smt` to `envsensor-kafka-smt`, if you want artifact names to match the public repo.
 * Add a public synthetic protobuf sample generator.
 * Add integration tests with a real Kafka Connect test harness.
 * Add a `Key` transform variant if key transformation becomes useful.
 * Make `ingested_at_ms` optionally disabled or record-time based.
 * Optionally support a header row generator as a separate utility.
 * Add Maven Enforcer rules for Java version and dependency convergence.
-* Align Maven project version and SMT `version()` return value.
 * Add CI for Maven build and tests.
 * Add example `KafkaConnector` manifests under `examples/`.
 

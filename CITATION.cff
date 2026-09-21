@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software in research, please cite the archived software release and the associated thesis."
+type: software
+authors:
+  - family-names: "Vámos"
+    given-names: "Péter"
+    orcid: "https://orcid.org/0009-0004-8554-5014"
+    affiliation: "John Wesley Theological College, Budapest"
+title: "Environmental sensor Kafka Connect SMT"
+version: "1.0.0"
+repository-code: "https://github.com/pvamos/envsensor-kafka-smt"
+license: MIT
+keywords:
+  - "environmental monitoring"
+  - "sensor network"
+  - "Apache Kafka"
+  - "Kafka Connect"
+  - "Java"
+  - "Protocol Buffers"
+  - "CSV"
+  - "S3"
+  - "data pipeline"
+abstract: >-
+  Kafka Connect Single Message Transform that decodes enriched environmental sensor Protocol Buffers values and emits RFC 4180 CSV row bytes for archival export to S3-compatible object storage.
