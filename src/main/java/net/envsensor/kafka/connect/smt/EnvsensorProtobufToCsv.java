@@ -125,7 +125,7 @@ public abstract class EnvsensorProtobufToCsv<R extends ConnectRecord<R>>
 
     @Override
     public String version() {
-        return "0.2.0";
+        return "1.0.0";
     }
 
     protected abstract Object operatingValue(R record);
