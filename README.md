@@ -2,6 +2,8 @@
 
 [https://github.com/pvamos/envsensor-kafka-smt](https://github.com/pvamos/envsensor-kafka-smt)
 
+[![DOI](https://zenodo.org/badge/1232158233.svg)](https://doi.org/10.5281/zenodo.22883425)
+
 Kafka Connect **Single Message Transform (SMT)** that decodes `envsensor.vernemq.EnrichedReading` **Protocol Buffers** from Kafka record **value BYTES** and emits a **single RFC 4180 CSV row** encoded as **UTF-8 BYTES**, **without a trailing newline**.
 
 This project is designed to be used in a Kafka Connect pipeline where:
@@ -42,6 +44,15 @@ The SMT is used in an environmental monitoring pipeline built around ESP32 senso
 **Author ORCID:** [0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
 
 This repository is one implementation component of the broader environmental sensor network. The project overview repository documents the end-to-end architecture, the role of each software component, research outputs, archival releases and reproducibility information.
+
+### Archival release
+
+**v1.0.0** is archived in Zenodo as a version-specific research-software record.
+
+* **Version DOI:** [10.5281/zenodo.22883426](https://doi.org/10.5281/zenodo.22883426)
+* **All-versions DOI:** [10.5281/zenodo.22883425](https://doi.org/10.5281/zenodo.22883425)
+
+Use the **version DOI** when citing the exact `v1.0.0` release. The all-versions DOI resolves to the latest archived release of this software.
 
 ---
 

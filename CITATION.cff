@@ -8,6 +8,8 @@ authors:
     affiliation: "John Wesley Theological College, Budapest"
 title: "Environmental sensor Kafka Connect SMT"
 version: "1.0.0"
+date-released: 2026-09-21
+doi: 10.5281/zenodo.22883426
 repository-code: "https://github.com/pvamos/envsensor-kafka-smt"
 license: MIT
 keywords:
